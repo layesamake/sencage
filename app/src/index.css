@@ -1,0 +1,25 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #0b1326; /* sengage-background */
+    color: #dae2fd;            /* sengage-text */
+    font-family: 'Hanken Grotesk', 'Inter', system-ui, sans-serif;
+  }
+}
+
+/* Micro-animations et styles généraux */
+.btn-primary {
+  @apply bg-sengageGreen text-background font-semibold px-4 py-2 rounded-lg transition-transform active:scale-95;
+}
+
+.btn-secondary {
+  @apply bg-surface text-sengageText border border-sengageSubText/20 px-4 py-2 rounded-lg transition-transform active:scale-95;
+}
+
+.card-sengage {
+  @apply bg-surface rounded-2xl p-4 shadow-xl border border-sengageSubText/5;
+}

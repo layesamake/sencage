@@ -1,0 +1,28 @@
+# Dependencies
+**/node_modules/
+**/dist/
+**/dist-ssr/
+
+# Local env files
+**/*.local
+**/.env
+**/.env.*
+
+# Logs
+**/logs
+**/*.log
+**/npm-debug.log*
+
+# Editor/System directories and files
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Stitch Skills
+stitch-skills/
+
