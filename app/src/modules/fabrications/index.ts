@@ -1,6 +1,4 @@
-import React from 'react';
+export { FabricationsList } from './components/FabricationsList';
+export { NouvelleFabrication } from './components/NouvelleFabrication';
+export { DetailFabrication } from './components/DetailFabrication';
 
-// Placeholders pour le module Fabrications (sans UI pour le moment)
-export const FabricationsList: React.FC = () => null;
-export const NouvelleFabrication: React.FC = () => null;
-export const DetailFabrication: React.FC = () => null;

@@ -1,5 +1,2 @@
-import React from 'react';
+export { ContactsView } from './components/ContactsView';
 
-// Placeholders pour le module Contacts (sans UI pour le moment)
-export const ContactsView: React.FC = () => null;
-export const NouveauContact: React.FC = () => null;
