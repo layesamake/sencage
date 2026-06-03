@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../../database/db';
 import { ProduitsService } from '../services/produitsService';
@@ -24,6 +24,19 @@ export const CatalogueView: React.FC = () => {
   const [accSeuil, setAccSeuil] = useState(10);
 
   const [dbError, setDbError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const initCategories = async () => {
+      try {
+        await ProduitsService.ensureCagesCategoriesSeeded();
+        await ProduitsService.ensureAccessoiresCategoriesSeeded();
+      } catch (err) {
+        console.error("Erreur d'initialisation des catégories :", err);
+        setDbError((err as Error).message || "Erreur d'initialisation des catégories");
+      }
+    };
+    initCategories();
+  }, []);
 
   // Charger les données
   const modeles = useLiveQuery(async () => {

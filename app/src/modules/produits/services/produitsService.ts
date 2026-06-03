@@ -16,7 +16,12 @@ export class ProduitsService {
   // === Catégories de Cages ===
 
   static async getCagesCategories(): Promise<CageCategorie[]> {
-    let list = await db.cagesCategories.toArray();
+    const list = await db.cagesCategories.toArray();
+    return list.sort((a, b) => a.nom.localeCompare(b.nom));
+  }
+
+  static async ensureCagesCategoriesSeeded(): Promise<void> {
+    const list = await db.cagesCategories.toArray();
     if (list.length === 0) {
       const defaults = ["Cage Caille", "Cage Poulet", "Cage Lapin"];
       
@@ -49,10 +54,7 @@ export class ProduitsService {
           await db.cagesModeles.update(model.id, { espece: prettyName });
         }
       }
-
-      list = await db.cagesCategories.toArray();
     }
-    return list.sort((a, b) => a.nom.localeCompare(b.nom));
   }
 
   static async addCageCategorie(nom: string): Promise<string> {
@@ -117,7 +119,12 @@ export class ProduitsService {
   // === Catégories d'Accessoires ===
 
   static async getAccessoiresCategories(): Promise<AccessoireCategorie[]> {
-    let list = await db.accessoiresCategories.toArray();
+    const list = await db.accessoiresCategories.toArray();
+    return list.sort((a, b) => a.nom.localeCompare(b.nom));
+  }
+
+  static async ensureAccessoiresCategoriesSeeded(): Promise<void> {
+    const list = await db.accessoiresCategories.toArray();
     if (list.length === 0) {
       const defaults = ["Abreuvoirs", "Mangeoires", "Tuyauterie", "Grillage", "Divers"];
       
@@ -133,9 +140,7 @@ export class ProduitsService {
           createdAt: new Date()
         });
       }
-      list = await db.accessoiresCategories.toArray();
     }
-    return list.sort((a, b) => a.nom.localeCompare(b.nom));
   }
 
   static async addAccessoireCategorie(nom: string): Promise<string> {
