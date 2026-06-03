@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { useAppStore } from '../../../store/useAppStore';
 import { SyncService } from '../../../services/syncService';
+import { LocalBackupService } from '../../../services/localBackupService';
 import { 
   Building, 
   Lock, 
   CloudLightning, 
   Settings, 
   Check, 
-  RefreshCw 
+  RefreshCw,
+  Download,
+  Upload,
+  Database
 } from 'lucide-react';
 
 export const ParametresView: React.FC = () => {
@@ -186,6 +190,69 @@ export const ParametresView: React.FC = () => {
             <span>Sauvegarder / Synchroniser maintenant</span>
           )}
         </button>
+      </div>
+
+      {/* Sauvegarde & Restauration Locale */}
+      <div className="card-sengage flex flex-col gap-3">
+        <div className="flex items-center gap-2 border-b border-sengageSubText/5 pb-2 text-white font-bold">
+          <Database className="h-4.5 w-4.5 text-sengageGreen" />
+          <span>Gestion des Données Locales (Backup)</span>
+        </div>
+
+        <p className="text-[10px] text-sengageSubText leading-normal">
+          Sauvegardez vos données localement sur votre appareil sous forme de fichier de sauvegarde JSON ou restaurez une sauvegarde précédente.
+        </p>
+
+        <div className="flex gap-2.5 mt-1">
+          {/* Exporter */}
+          <button
+            onClick={async () => {
+              try {
+                await LocalBackupService.exportBackup();
+              } catch (err) {
+                alert("Erreur lors de l'exportation : " + (err as Error).message);
+              }
+            }}
+            className="flex-1 py-2.5 bg-sengageGreen/10 border border-sengageGreen/20 hover:bg-sengageGreen/20 text-sengageGreen font-bold rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5"
+          >
+            <Download className="h-4 w-4" />
+            <span>Exporter</span>
+          </button>
+
+          {/* Importer */}
+          <label className="flex-1 py-2.5 bg-surface hover:bg-background border border-sengageSubText/10 text-white font-bold rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center select-none">
+            <Upload className="h-4 w-4 text-sengageOrange" />
+            <span>Importer</span>
+            <input
+              type="file"
+              accept=".json"
+              className="hidden"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+
+                const confirmRestore = confirm(
+                  "⚠️ ATTENTION : Restaurer ces données va ÉCRASER l'intégralité de vos données locales actuelles (cages, commandes, stocks, finances). Cette action est irréversible. Voulez-vous continuer ?"
+                );
+                
+                if (!confirmRestore) {
+                  e.target.value = '';
+                  return;
+                }
+
+                try {
+                  const res = await LocalBackupService.importBackup(file);
+                  alert(res.message);
+                  if (res.success) {
+                    window.location.reload();
+                  }
+                } catch (err) {
+                  alert("Erreur critique : " + (err as Error).message);
+                }
+              }}
+            />
+          </label>
+        </div>
       </div>
 
       {/* Préférences */}
