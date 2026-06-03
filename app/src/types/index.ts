@@ -1,4 +1,4 @@
-export type EspeceType = 'caille' | 'poulet' | 'lapin';
+export type EspeceType = string;
 export type UniteType = 'piece' | 'metre' | 'rouleau' | 'lot';
 export type ContactType = 'client' | 'menuisier' | 'fournisseur';
 export type CompteType = 'caisse' | 'wave' | 'orange_money';
@@ -22,6 +22,12 @@ export interface CageModele {
   createdAt: Date;
 }
 
+export interface CageCategorie {
+  id: string;
+  nom: string;
+  createdAt: Date;
+}
+
 export interface Accessoire {
   id: string;
   nom: string;
@@ -30,6 +36,12 @@ export interface Accessoire {
   prixAchat: number;
   prixVente: number;
   seuilStockFaible: number;
+  createdAt: Date;
+}
+
+export interface AccessoireCategorie {
+  id: string;
+  nom: string;
   createdAt: Date;
 }
 

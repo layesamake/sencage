@@ -11,7 +11,9 @@ import {
   AlertTriangle, 
   Wallet, 
   PlusCircle, 
-  Layers 
+  Layers,
+  BookOpen,
+  BarChart3
 } from 'lucide-react';
 
 export const DashboardView: React.FC = () => {
@@ -142,6 +144,28 @@ export const DashboardView: React.FC = () => {
             <div>
               <div className="font-bold text-sm text-white">Voir Stock</div>
               <div className="text-[10px] text-sengageSubText">Cages & Acc.</div>
+            </div>
+          </button>
+
+          <button 
+            onClick={() => setActiveTab('produits')}
+            className="flex items-center gap-3 p-3 bg-surface hover:bg-surface/80 rounded-2xl border border-sengageSubText/5 active:scale-95 transition-all text-left"
+          >
+            <BookOpen className="h-5 w-5 text-sengageGreen" />
+            <div>
+              <div className="font-bold text-sm text-white">Catalogue</div>
+              <div className="text-[10px] text-sengageSubText">Cages & Acc.</div>
+            </div>
+          </button>
+
+          <button 
+            onClick={() => setActiveTab('rapports')}
+            className="flex items-center gap-3 p-3 bg-surface hover:bg-surface/80 rounded-2xl border border-sengageSubText/5 active:scale-95 transition-all text-left"
+          >
+            <BarChart3 className="h-5 w-5 text-sengageOrange" />
+            <div>
+              <div className="font-bold text-sm text-white">Rapports</div>
+              <div className="text-[10px] text-sengageSubText">Statistiques</div>
             </div>
           </button>
         </div>

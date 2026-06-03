@@ -11,7 +11,8 @@ import {
   Settings, 
   WifiOff, 
   Lock, 
-  Users 
+  Users,
+  Layers
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -67,14 +68,23 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
         <div className="flex items-center gap-3">
           <button 
+            onClick={() => setActiveTab('produits')}
+            className={`p-2 rounded-xl transition-all ${activeTab === 'produits' ? 'bg-background text-sengageGreen' : 'text-sengageSubText hover:text-white'}`}
+            title="Catalogue & Kits"
+          >
+            <Layers className="h-4.5 w-4.5" />
+          </button>
+          <button 
             onClick={() => setActiveTab('contacts')}
             className={`p-2 rounded-xl transition-all ${activeTab === 'contacts' ? 'bg-background text-sengageGreen' : 'text-sengageSubText hover:text-white'}`}
+            title="Contacts"
           >
             <Users className="h-4.5 w-4.5" />
           </button>
           <button 
             onClick={() => setActiveTab('parametres')}
             className={`p-2 rounded-xl transition-all ${activeTab === 'parametres' ? 'bg-background text-sengageGreen' : 'text-sengageSubText hover:text-white'}`}
+            title="Paramètres"
           >
             <Settings className="h-4.5 w-4.5" />
           </button>
