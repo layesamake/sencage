@@ -1,6 +1,17 @@
 import { db } from '../../../database/db';
 import type { CageModele, CageCategorie, Accessoire, AccessoireCategorie, Kit } from '../../../types';
 
+const generateUUID = () => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
 export class ProduitsService {
   // === Catégories de Cages ===
 
@@ -25,7 +36,7 @@ export class ProduitsService {
       
       for (const nom of allCatsToSeed) {
         await db.cagesCategories.add({
-          id: crypto.randomUUID(),
+          id: generateUUID(),
           nom: nom.trim(),
           createdAt: new Date()
         });
@@ -51,7 +62,7 @@ export class ProduitsService {
     const existing = await db.cagesCategories.where('nom').equalsIgnoreCase(cleanNom).first();
     if (existing) throw new Error("Cette catégorie existe déjà.");
 
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     await db.cagesCategories.add({
       id,
       nom: cleanNom,
@@ -92,7 +103,7 @@ export class ProduitsService {
     let diversCat = await db.cagesCategories.where('nom').equalsIgnoreCase('Divers').first();
     if (!diversCat && nomCat.toLowerCase() !== 'divers') {
       await db.cagesCategories.add({
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         nom: 'Divers',
         createdAt: new Date()
       });
@@ -117,7 +128,7 @@ export class ProduitsService {
       
       for (const nom of allCatsToSeed) {
         await db.accessoiresCategories.add({
-          id: crypto.randomUUID(),
+          id: generateUUID(),
           nom: nom.trim(),
           createdAt: new Date()
         });
@@ -135,7 +146,7 @@ export class ProduitsService {
     const existing = await db.accessoiresCategories.where('nom').equalsIgnoreCase(cleanNom).first();
     if (existing) throw new Error("Cette catégorie existe déjà.");
 
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     await db.accessoiresCategories.add({
       id,
       nom: cleanNom,
@@ -179,7 +190,7 @@ export class ProduitsService {
     let diversCat = await db.accessoiresCategories.where('nom').equalsIgnoreCase('Divers').first();
     if (!diversCat && nomCat.toLowerCase() !== 'divers') {
       await db.accessoiresCategories.add({
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         nom: 'Divers',
         createdAt: new Date()
       });
@@ -197,7 +208,7 @@ export class ProduitsService {
   }
 
   static async addCageModele(cage: Omit<CageModele, 'id' | 'createdAt'>): Promise<string> {
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     const newCage: CageModele = {
       ...cage,
       id,
@@ -218,7 +229,7 @@ export class ProduitsService {
   }
 
   static async addAccessoire(accessoire: Omit<Accessoire, 'id' | 'createdAt'>): Promise<string> {
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     const newAccessoire: Accessoire = {
       ...accessoire,
       id,
@@ -228,7 +239,7 @@ export class ProduitsService {
     
     // Initialiser automatiquement l'état de stock pour cet accessoire
     await db.stocks.add({
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       typeProduit: 'accessoire',
       accessoireId: id,
       quantiteDisponible: 0,
@@ -251,7 +262,7 @@ export class ProduitsService {
   }
 
   static async addKit(kit: Omit<Kit, 'id' | 'createdAt'>): Promise<string> {
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     const newKit: Kit = {
       ...kit,
       id,

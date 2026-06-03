@@ -23,11 +23,48 @@ export const CatalogueView: React.FC = () => {
   const [accPrixVente, setAccPrixVente] = useState(0);
   const [accSeuil, setAccSeuil] = useState(10);
 
+  const [dbError, setDbError] = useState<string | null>(null);
+
   // Charger les données
-  const modeles = useLiveQuery(() => ProduitsService.getCagesModeles(), []);
-  const accessoires = useLiveQuery(() => ProduitsService.getAccessoires(), []);
-  const categories = useLiveQuery(() => ProduitsService.getAccessoiresCategories(), []);
-  const cagesCategories = useLiveQuery(() => ProduitsService.getCagesCategories(), []);
+  const modeles = useLiveQuery(async () => {
+    try {
+      return await ProduitsService.getCagesModeles();
+    } catch (e) {
+      console.error("Erreur cagesModeles:", e);
+      setDbError((e as Error).message || "Erreur modèles de cages");
+      return [];
+    }
+  }, []);
+
+  const accessoires = useLiveQuery(async () => {
+    try {
+      return await ProduitsService.getAccessoires();
+    } catch (e) {
+      console.error("Erreur accessoires:", e);
+      setDbError((e as Error).message || "Erreur accessoires");
+      return [];
+    }
+  }, []);
+
+  const categories = useLiveQuery(async () => {
+    try {
+      return await ProduitsService.getAccessoiresCategories();
+    } catch (e) {
+      console.error("Erreur accessoiresCategories:", e);
+      setDbError((e as Error).message || "Erreur catégories d'accessoires");
+      return [];
+    }
+  }, []);
+
+  const cagesCategories = useLiveQuery(async () => {
+    try {
+      return await ProduitsService.getCagesCategories();
+    } catch (e) {
+      console.error("Erreur cagesCategories:", e);
+      setDbError((e as Error).message || "Erreur catégories de cages");
+      return [];
+    }
+  }, []);
 
   // Gestion des catégories d'accessoires
   const [showCategoryManager, setShowCategoryManager] = useState(false);
@@ -107,6 +144,13 @@ export const CatalogueView: React.FC = () => {
           <Plus className="h-5 w-5" />
         </button>
       </div>
+
+      {dbError && (
+        <div className="bg-sengageRed/20 border border-sengageRed/45 text-sengageRed p-3 rounded-2xl text-xs font-semibold flex items-center justify-between gap-2">
+          <span>⚠️ Problème de base de données : {dbError}. Essayez de recharger la page.</span>
+          <button onClick={() => setDbError(null)} className="font-bold hover:text-white">✕</button>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex bg-surface rounded-2xl p-1 border border-sengageSubText/5">
