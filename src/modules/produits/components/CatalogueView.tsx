@@ -9,6 +9,7 @@ export const CatalogueView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'cages' | 'accessoires' | 'kits'>('cages');
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingCageId, setEditingCageId] = useState<string | null>(null);
+  const [viewingCageId, setViewingCageId] = useState<string | null>(null);
 
   // Formulaire Cages
   const [cageNom, setCageNom] = useState('');
@@ -343,7 +344,11 @@ export const CatalogueView: React.FC = () => {
                       </span>
                     </h5>
                     {listForCat.map(m => (
-                      <div key={m.id} className="card-sengage flex justify-between items-center border border-sengageSubText/5 hover:border-sengageSubText/15 transition-all">
+                      <div 
+                        key={m.id} 
+                        onClick={() => setViewingCageId(m.id)}
+                        className="card-sengage cursor-pointer flex justify-between items-center border border-sengageSubText/5 hover:border-sengageGreen/30 transition-all"
+                      >
                         <div>
                           <h4 className="font-bold text-white text-sm">{m.nom}</h4>
                           <div className="flex gap-4 mt-2 text-[10px] text-sengageSubText">
@@ -353,21 +358,13 @@ export const CatalogueView: React.FC = () => {
                         </div>
                         
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
-                              setEditingCageId(m.id);
-                              setCageNom(m.nom);
-                              setCageEspece(m.espece);
-                              setCagePrix(m.prixVenteBase);
-                              setCageCout(m.coutFabricationRef);
-                              setShowAddForm(true);
-                            }}
-                            className="p-1.5 text-sengageSubText hover:text-white rounded-lg transition-all"
-                            title="Modifier"
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleCageStatus(m.id, m.actif);
+                            }} 
+                            className="p-1"
                           >
-                            <Edit2 className="h-4 w-4" />
-                          </button>
-                          <button onClick={() => toggleCageStatus(m.id, m.actif)} className="p-1">
                             {m.actif ? (
                               <ToggleRight className="h-7 w-7 text-sengageGreen" />
                             ) : (
@@ -562,6 +559,75 @@ export const CatalogueView: React.FC = () => {
           );
         })()}
       </div>
+
+      {/* Fiche Cage (Lecture Seule) */}
+      {viewingCageId && (() => {
+        const cage = modeles?.find(m => m.id === viewingCageId);
+        if (!cage) return null;
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+            <div className="bg-surface max-w-sm w-full rounded-3xl p-6 border border-sengageSubText/10 shadow-2xl flex flex-col gap-4 relative">
+              <button 
+                onClick={() => setViewingCageId(null)}
+                className="absolute top-4 right-4 text-sengageSubText hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              
+              <h3 className="font-black text-lg text-white border-b border-sengageSubText/5 pb-3 pr-8">
+                Fiche Modèle de Cage
+              </h3>
+
+              <div className="flex flex-col gap-3">
+                <div>
+                  <span className="text-[10px] text-sengageSubText block mb-0.5">Nom du modèle</span>
+                  <div className="font-bold text-white text-base">{cage.nom}</div>
+                </div>
+                <div>
+                  <span className="text-[10px] text-sengageSubText block mb-0.5">Catégorie</span>
+                  <div className="font-semibold text-white text-sm capitalize">{cage.espece}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 bg-background p-3 rounded-xl border border-sengageSubText/5">
+                  <div>
+                    <span className="text-[10px] text-sengageSubText block mb-0.5">Prix de vente</span>
+                    <div className="font-black text-sengageGreen">{cage.prixVenteBase.toLocaleString()} F</div>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-sengageSubText block mb-0.5">Coût de fabrication</span>
+                    <div className="font-bold text-white">{cage.coutFabricationRef.toLocaleString()} F</div>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-[10px] text-sengageSubText block mb-0.5">Statut</span>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs font-bold px-2 py-1 rounded-lg ${cage.actif ? 'bg-sengageGreen/20 text-sengageGreen' : 'bg-sengageSubText/20 text-sengageSubText'}`}>
+                      {cage.actif ? 'Actif' : 'Inactif'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-4 pt-4 border-t border-sengageSubText/5">
+                <button
+                  onClick={() => {
+                    setViewingCageId(null);
+                    setEditingCageId(cage.id);
+                    setCageNom(cage.nom);
+                    setCageEspece(cage.espece);
+                    setCagePrix(cage.prixVenteBase);
+                    setCageCout(cage.coutFabricationRef);
+                    setShowAddForm(true);
+                  }}
+                  className="flex-1 py-2.5 bg-sengageGreen/10 hover:bg-sengageGreen/20 text-sengageGreen font-bold rounded-xl active:scale-95 transition-all flex items-center justify-center gap-2"
+                >
+                  <Edit2 className="h-4 w-4" />
+                  <span>Modifier le modèle</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Modale d'ajout */}
       {showAddForm && (
