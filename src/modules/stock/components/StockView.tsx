@@ -118,7 +118,7 @@ export const StockView: React.FC = () => {
         <h2 className="text-xl font-bold text-sengageText">Stock SENGAGE</h2>
         <button
           onClick={() => setShowCorrectionForm(true)}
-          className="px-3.5 py-1.5 bg-sengageOrange text-white font-bold rounded-xl active:scale-95 transition-all"
+          className="px-3.5 py-1.5 bg-[#FFCC00] hover:opacity-80 text-[#002E6D] font-bold rounded-xl active:scale-95 transition-all shadow-lg"
         >
           Ajustement
         </button>
