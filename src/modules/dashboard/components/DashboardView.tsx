@@ -103,7 +103,7 @@ export const DashboardView: React.FC = () => {
 
       {/* Synthèse Trésorerie */}
       <div className="flex flex-col gap-2">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-sengageSubText/60">Soldes Trésorerie</h3>
+        <h3 className="text-xs font-black uppercase tracking-widest text-sengageText opacity-80 mb-1">Soldes Trésorerie</h3>
         <div 
           className="card-sengage flex flex-col gap-4 border-none"
           style={{ backgroundColor: '#FFCC00', color: '#002E6D' }}
@@ -143,7 +143,7 @@ export const DashboardView: React.FC = () => {
 
       {/* Statistiques Métier */}
       <div className="flex flex-col gap-2">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-sengageSubText/60">Performance & Activité</h3>
+        <h3 className="text-xs font-black uppercase tracking-widest text-sengageText opacity-80 mb-1">Performance & Activité</h3>
         
         <div className="grid grid-cols-2 gap-3">
           {/* Marge */}
