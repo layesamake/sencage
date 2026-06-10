@@ -91,7 +91,7 @@ export const FinancesView: React.FC = () => {
         <div className="flex gap-2">
           <button
             onClick={() => { setFormMode('transfert'); setShowAddForm(true); }}
-            className="p-2 bg-surface hover:bg-surface/80 text-white rounded-xl transition-all active:scale-95 flex items-center justify-center border border-sengageSubText/10"
+            className="p-2 bg-[#FFCC00] hover:opacity-80 text-[#002E6D] rounded-xl transition-all active:scale-95 flex items-center justify-center shadow-lg"
             title="Transfert Interne"
           >
             <Send className="h-4.5 w-4.5" />
