@@ -166,7 +166,7 @@ export const NouvelleCommande: React.FC = () => {
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
-        <h2 className="text-xl font-bold text-white">Nouvelle Commande</h2>
+        <h2 className="text-xl font-bold text-sengageText">Nouvelle Commande</h2>
       </div>
 
       {/* Section 1 : Client */}

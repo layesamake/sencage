@@ -95,7 +95,7 @@ export const DashboardView: React.FC = () => {
     <div className="flex flex-col gap-6 animate-fade-in">
       {/* Salutation */}
       <div>
-        <h2 className="text-xl font-bold text-white">Bonjour !</h2>
+        <h2 className="text-xl font-bold text-sengageText">Bonjour !</h2>
         <p className="text-sengageSubText text-xs capitalize">{formattedDate}</p>
       </div>
 

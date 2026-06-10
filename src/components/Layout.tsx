@@ -74,7 +74,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="bg-sengageGreen/10 px-2.5 py-1 rounded-lg border border-sengageGreen/20">
             <span className="text-sengageGreen font-bold text-xs tracking-wider">SENGAGE</span>
           </div>
-          <span className="text-white font-bold text-sm">Manager</span>
+          <span className="text-sengageText font-bold text-sm">Manager</span>
         </div>
         <div className="flex items-center gap-3">
           <button 

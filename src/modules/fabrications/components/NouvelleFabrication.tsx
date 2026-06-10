@@ -107,7 +107,7 @@ export const NouvelleFabrication: React.FC = () => {
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
-        <h2 className="text-xl font-bold text-white">Nouvelle Fabrication</h2>
+        <h2 className="text-xl font-bold text-sengageText">Nouvelle Fabrication</h2>
       </div>
 
       {/* Informations menuisier */}

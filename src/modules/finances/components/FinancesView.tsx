@@ -87,7 +87,7 @@ export const FinancesView: React.FC = () => {
   return (
     <div className="flex flex-col gap-4 animate-fade-in text-xs">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold text-white">Trésorerie & Comptes</h2>
+        <h2 className="text-xl font-bold text-sengageText">Trésorerie & Comptes</h2>
         <div className="flex gap-2">
           <button
             onClick={() => { setFormMode('transfert'); setShowAddForm(true); }}

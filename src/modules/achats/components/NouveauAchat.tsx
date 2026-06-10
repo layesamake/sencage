@@ -96,7 +96,7 @@ export const NouveauAchat: React.FC = () => {
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
-        <h2 className="text-xl font-bold text-white">Achat Fournisseur</h2>
+        <h2 className="text-xl font-bold text-sengageText">Achat Fournisseur</h2>
       </div>
 
       <div className="bg-sengageOrange/10 border border-sengageOrange/25 p-3 rounded-2xl flex gap-2">

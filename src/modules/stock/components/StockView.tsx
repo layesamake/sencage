@@ -115,7 +115,7 @@ export const StockView: React.FC = () => {
   return (
     <div className="flex flex-col gap-4 animate-fade-in text-xs">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold text-white">Stock SENGAGE</h2>
+        <h2 className="text-xl font-bold text-sengageText">Stock SENGAGE</h2>
         <button
           onClick={() => setShowCorrectionForm(true)}
           className="px-3.5 py-1.5 bg-sengageOrange text-white font-bold rounded-xl active:scale-95 transition-all"

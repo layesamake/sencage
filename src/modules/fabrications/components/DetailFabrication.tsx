@@ -116,7 +116,7 @@ export const DetailFabrication: React.FC = () => {
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
-        <h2 className="text-xl font-bold text-white">Détail Fabrication</h2>
+        <h2 className="text-xl font-bold text-sengageText">Détail Fabrication</h2>
       </div>
 
       {/* Menuisier et Statut */}

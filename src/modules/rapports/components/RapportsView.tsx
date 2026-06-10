@@ -102,7 +102,7 @@ export const RapportsView: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4 animate-fade-in text-xs">
-      <h2 className="text-xl font-bold text-white">Rapports & Rentabilité</h2>
+      <h2 className="text-xl font-bold text-sengageText">Rapports & Rentabilité</h2>
 
       {/* Téléchargements PDF */}
       <div className="card-sengage flex flex-col gap-2">

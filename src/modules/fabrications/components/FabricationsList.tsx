@@ -86,7 +86,7 @@ export const FabricationsList: React.FC = () => {
   return (
     <div className="flex flex-col gap-4 animate-fade-in text-xs">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold text-white">Fabrications Internes</h2>
+        <h2 className="text-xl font-bold text-sengageText">Fabrications Internes</h2>
         <button
           onClick={() => setActiveTab('nouvelle_fabrication')}
           className="p-2 bg-sengageGreen text-background hover:bg-sengageGreen/80 rounded-xl transition-all active:scale-95 flex items-center justify-center"
