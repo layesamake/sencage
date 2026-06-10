@@ -8,6 +8,7 @@ import type { EspeceType, UniteType } from '../../../types';
 export const CatalogueView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'cages' | 'accessoires' | 'kits'>('cages');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingCageId, setEditingCageId] = useState<string | null>(null);
 
   // Formulaire Cages
   const [cageNom, setCageNom] = useState('');
@@ -100,18 +101,29 @@ export const CatalogueView: React.FC = () => {
     if (!cageNom || !cageEspece) return alert("Veuillez remplir le nom et la catégorie.");
 
     try {
-      await ProduitsService.addCageModele({
-        nom: cageNom,
-        espece: cageEspece,
-        prixVenteBase: cagePrix,
-        coutFabricationRef: cageCout,
-        actif: true
-      });
-      alert("Modèle de cage ajouté.");
+      if (editingCageId) {
+        await ProduitsService.updateCageModele(editingCageId, {
+          nom: cageNom,
+          espece: cageEspece,
+          prixVenteBase: cagePrix,
+          coutFabricationRef: cageCout
+        });
+        alert("Modèle de cage modifié.");
+      } else {
+        await ProduitsService.addCageModele({
+          nom: cageNom,
+          espece: cageEspece,
+          prixVenteBase: cagePrix,
+          coutFabricationRef: cageCout,
+          actif: true
+        });
+        alert("Modèle de cage ajouté.");
+      }
       setCageNom('');
       setCageEspece('');
       setCagePrix(0);
       setCageCout(0);
+      setEditingCageId(null);
       setShowAddForm(false);
     } catch (err) {
       alert((err as Error).message);
@@ -151,7 +163,16 @@ export const CatalogueView: React.FC = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold text-sengageText">Catalogue & Kits</h2>
         <button
-          onClick={() => setShowAddForm(true)}
+          onClick={() => {
+            if (activeTab === 'cages') {
+              setEditingCageId(null);
+              setCageNom('');
+              setCageEspece('');
+              setCagePrix(0);
+              setCageCout(0);
+            }
+            setShowAddForm(true);
+          }}
           className="p-2 bg-sengageGreen text-background hover:bg-sengageGreen/80 rounded-xl transition-all active:scale-95 flex items-center justify-center"
         >
           <Plus className="h-5 w-5" />
@@ -212,6 +233,11 @@ export const CatalogueView: React.FC = () => {
                   <button
                     onClick={() => {
                       setActiveTab('cages');
+                      setEditingCageId(null);
+                      setCageNom('');
+                      setCageEspece('');
+                      setCagePrix(0);
+                      setCageCout(0);
                       setShowAddForm(true);
                     }}
                     className="px-2.5 py-1.5 bg-sengageGreen text-background font-bold rounded-xl active:scale-95 transition-all flex items-center gap-1"
@@ -250,13 +276,29 @@ export const CatalogueView: React.FC = () => {
                           </div>
                         </div>
                         
-                        <button onClick={() => toggleCageStatus(m.id, m.actif)} className="p-1">
-                          {m.actif ? (
-                            <ToggleRight className="h-7 w-7 text-sengageGreen" />
-                          ) : (
-                            <ToggleLeft className="h-7 w-7 text-sengageSubText/40" />
-                          )}
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              setEditingCageId(m.id);
+                              setCageNom(m.nom);
+                              setCageEspece(m.espece);
+                              setCagePrix(m.prixVenteBase);
+                              setCageCout(m.coutFabricationRef);
+                              setShowAddForm(true);
+                            }}
+                            className="p-1.5 text-sengageSubText hover:text-white rounded-lg transition-all"
+                            title="Modifier"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </button>
+                          <button onClick={() => toggleCageStatus(m.id, m.actif)} className="p-1">
+                            {m.actif ? (
+                              <ToggleRight className="h-7 w-7 text-sengageGreen" />
+                            ) : (
+                              <ToggleLeft className="h-7 w-7 text-sengageSubText/40" />
+                            )}
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -358,7 +400,9 @@ export const CatalogueView: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
           {activeTab === 'cages' ? (
             <form onSubmit={handleAddCage} className="bg-surface max-w-sm w-full rounded-3xl p-6 border border-sengageSubText/10 shadow-2xl flex flex-col gap-4">
-              <h3 className="font-black text-sm text-white border-b border-sengageSubText/5 pb-3">Nouveau Modèle de Cage</h3>
+              <h3 className="font-black text-sm text-white border-b border-sengageSubText/5 pb-3">
+                {editingCageId ? "Modifier le Modèle de Cage" : "Nouveau Modèle de Cage"}
+              </h3>
               
               <div>
                 <label className="text-[10px] text-sengageSubText block mb-1">Nom du Modèle</label>
@@ -460,11 +504,18 @@ export const CatalogueView: React.FC = () => {
                   type="submit"
                   className="flex-1 py-2.5 bg-sengageGreen text-background font-black rounded-xl active:scale-95 transition-all text-xs"
                 >
-                  Ajouter
+                  {editingCageId ? "Modifier" : "Ajouter"}
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowAddForm(false)}
+                  onClick={() => {
+                    setShowAddForm(false);
+                    setEditingCageId(null);
+                    setCageNom('');
+                    setCageEspece('');
+                    setCagePrix(0);
+                    setCageCout(0);
+                  }}
                   className="flex-1 py-2.5 bg-background text-sengageSubText rounded-xl border border-sengageSubText/10 active:scale-95 transition-all text-xs"
                 >
                   Annuler
