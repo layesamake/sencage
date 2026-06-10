@@ -10,6 +10,8 @@ export const CatalogueView: React.FC = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingCageId, setEditingCageId] = useState<string | null>(null);
   const [viewingCageId, setViewingCageId] = useState<string | null>(null);
+  const [viewingAccId, setViewingAccId] = useState<string | null>(null);
+  const [viewingKitId, setViewingKitId] = useState<string | null>(null);
 
   // Formulaire Cages
   const [cageNom, setCageNom] = useState('');
@@ -447,29 +449,15 @@ export const CatalogueView: React.FC = () => {
                       </span>
                     </h5>
                     {listForCat.map(a => (
-                      <div key={a.id} className="card-sengage flex flex-col gap-2 border border-sengageSubText/5 hover:border-sengageSubText/15 transition-all">
+                      <div 
+                        key={a.id} 
+                        onClick={() => setViewingAccId(a.id)}
+                        className="card-sengage cursor-pointer flex flex-col gap-2 border border-sengageSubText/5 hover:border-sengageGreen/30 transition-all"
+                      >
                         <div className="flex justify-between items-start">
                           <div>
                             <h4 className="font-bold text-white text-sm">{a.nom}</h4>
                             <span className="text-[10px] text-sengageSubText/60 capitalize">Unité : {a.unite}</span>
-                          </div>
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => {
-                                setEditingAccId(a.id);
-                                setAccNom(a.nom);
-                                setAccCat(a.categorie);
-                                setAccUnite(a.unite);
-                                setAccPrixAchat(a.prixAchat);
-                                setAccPrixVente(a.prixVente);
-                                setAccSeuil(a.seuilStockFaible);
-                                setShowAddForm(true);
-                              }}
-                              className="p-1.5 text-sengageSubText hover:text-white rounded-lg transition-all"
-                              title="Modifier"
-                            >
-                              <Edit2 className="h-4 w-4" />
-                            </button>
                           </div>
                         </div>
                         <div className="flex gap-4 text-[10px] text-sengageSubText border-t border-sengageSubText/5 pt-2 mt-1">
@@ -520,27 +508,19 @@ export const CatalogueView: React.FC = () => {
                 {list.map(k => {
                   const cage = modeles?.find(m => m.id === k.cageModeleId);
                   return (
-                    <div key={k.id} className="card-sengage flex justify-between items-center border border-sengageSubText/5 hover:border-sengageSubText/15 transition-all">
+                    <div 
+                      key={k.id} 
+                      onClick={() => setViewingKitId(k.id)}
+                      className="card-sengage cursor-pointer flex justify-between items-center border border-sengageSubText/5 hover:border-sengageGreen/30 transition-all"
+                    >
                       <div>
                         <h4 className="font-bold text-white text-sm">{k.nom}</h4>
                         <span className="text-[10px] text-sengageSubText">Cage: {cage?.nom || 'Inconnue'} ({k.accessoires.length} accessoires)</span>
                       </div>
                       <div className="flex gap-2">
                         <button
-                          onClick={() => {
-                            setEditingKitId(k.id);
-                            setKitNom(k.nom);
-                            setKitCageId(k.cageModeleId);
-                            setKitAccessoires(k.accessoires || []);
-                            setShowAddForm(true);
-                          }}
-                          className="p-1.5 text-sengageSubText hover:text-white rounded-lg transition-all"
-                          title="Modifier"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={async () => {
+                          onClick={async (e) => {
+                            e.stopPropagation();
                             if (confirm(`Supprimer le kit ${k.nom} ?`)) {
                               await ProduitsService.deleteKit(k.id);
                             }
@@ -622,6 +602,146 @@ export const CatalogueView: React.FC = () => {
                 >
                   <Edit2 className="h-4 w-4" />
                   <span>Modifier le modèle</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Fiche Accessoire (Lecture Seule) */}
+      {viewingAccId && (() => {
+        const acc = accessoires?.find(a => a.id === viewingAccId);
+        if (!acc) return null;
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+            <div className="bg-surface max-w-sm w-full rounded-3xl p-6 border border-sengageSubText/10 shadow-2xl flex flex-col gap-4 relative">
+              <button 
+                onClick={() => setViewingAccId(null)}
+                className="absolute top-4 right-4 text-sengageSubText hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              
+              <h3 className="font-black text-lg text-white border-b border-sengageSubText/5 pb-3 pr-8">
+                Fiche Accessoire
+              </h3>
+
+              <div className="flex flex-col gap-3">
+                <div>
+                  <span className="text-[10px] text-sengageSubText block mb-0.5">Nom</span>
+                  <div className="font-bold text-white text-base">{acc.nom}</div>
+                </div>
+                <div>
+                  <span className="text-[10px] text-sengageSubText block mb-0.5">Catégorie</span>
+                  <div className="font-semibold text-white text-sm capitalize">{acc.categorie}</div>
+                </div>
+                <div>
+                  <span className="text-[10px] text-sengageSubText block mb-0.5">Unité</span>
+                  <div className="font-semibold text-white text-sm capitalize">{acc.unite}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 bg-background p-3 rounded-xl border border-sengageSubText/5">
+                  <div>
+                    <span className="text-[10px] text-sengageSubText block mb-0.5">Prix Achat</span>
+                    <div className="font-bold text-white">{acc.prixAchat.toLocaleString()} F</div>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-sengageSubText block mb-0.5">Prix Vente</span>
+                    <div className="font-black text-sengageGreen">{acc.prixVente.toLocaleString()} F</div>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-[10px] text-sengageSubText block mb-0.5">Seuil d'alerte stock</span>
+                  <div className="font-semibold text-sengageRed text-sm">{acc.seuilStockFaible}</div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-4 pt-4 border-t border-sengageSubText/5">
+                <button
+                  onClick={() => {
+                    setViewingAccId(null);
+                    setEditingAccId(acc.id);
+                    setAccNom(acc.nom);
+                    setAccCat(acc.categorie);
+                    setAccUnite(acc.unite);
+                    setAccPrixAchat(acc.prixAchat);
+                    setAccPrixVente(acc.prixVente);
+                    setAccSeuil(acc.seuilStockFaible);
+                    setShowAddForm(true);
+                  }}
+                  className="flex-1 py-2.5 bg-sengageGreen/10 hover:bg-sengageGreen/20 text-sengageGreen font-bold rounded-xl active:scale-95 transition-all flex items-center justify-center gap-2"
+                >
+                  <Edit2 className="h-4 w-4" />
+                  <span>Modifier l'accessoire</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Fiche Kit (Lecture Seule) */}
+      {viewingKitId && (() => {
+        const kit = kits?.find(k => k.id === viewingKitId);
+        if (!kit) return null;
+        const cage = modeles?.find(m => m.id === kit.cageModeleId);
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+            <div className="bg-surface max-w-sm w-full rounded-3xl p-6 border border-sengageSubText/10 shadow-2xl flex flex-col gap-4 relative max-h-[90vh] overflow-y-auto">
+              <button 
+                onClick={() => setViewingKitId(null)}
+                className="absolute top-4 right-4 text-sengageSubText hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              
+              <h3 className="font-black text-lg text-white border-b border-sengageSubText/5 pb-3 pr-8">
+                Fiche Kit
+              </h3>
+
+              <div className="flex flex-col gap-3">
+                <div>
+                  <span className="text-[10px] text-sengageSubText block mb-0.5">Nom du kit</span>
+                  <div className="font-bold text-white text-base">{kit.nom}</div>
+                </div>
+                <div>
+                  <span className="text-[10px] text-sengageSubText block mb-0.5">Cage associée</span>
+                  <div className="font-semibold text-white text-sm">{cage?.nom || 'Inconnue'}</div>
+                </div>
+                
+                <div className="mt-2">
+                  <span className="text-[10px] text-sengageSubText block mb-1">Accessoires inclus</span>
+                  <div className="bg-background rounded-xl border border-sengageSubText/5 p-2 flex flex-col gap-2">
+                    {kit.accessoires.map((ka, idx) => {
+                      const acc = accessoires?.find(a => a.id === ka.accessoireId);
+                      return (
+                        <div key={idx} className="flex justify-between items-center text-xs">
+                          <span className="text-white">{acc?.nom || 'Inconnu'}</span>
+                          <span className="text-sengageSubText font-bold bg-surface px-2 py-0.5 rounded-md">x{ka.quantite}</span>
+                        </div>
+                      );
+                    })}
+                    {kit.accessoires.length === 0 && (
+                      <div className="text-xs text-sengageSubText/50 text-center py-2">Aucun accessoire</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-4 pt-4 border-t border-sengageSubText/5">
+                <button
+                  onClick={() => {
+                    setViewingKitId(null);
+                    setEditingKitId(kit.id);
+                    setKitNom(kit.nom);
+                    setKitCageId(kit.cageModeleId);
+                    setKitAccessoires(kit.accessoires);
+                    setShowAddForm(true);
+                  }}
+                  className="flex-1 py-2.5 bg-sengageGreen/10 hover:bg-sengageGreen/20 text-sengageGreen font-bold rounded-xl active:scale-95 transition-all flex items-center justify-center gap-2"
+                >
+                  <Edit2 className="h-4 w-4" />
+                  <span>Modifier le kit</span>
                 </button>
               </div>
             </div>
