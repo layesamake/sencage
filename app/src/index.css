@@ -2,15 +2,47 @@
 @config "../tailwind.config.js";
 
 @layer base {
+  :root {
+    --color-background: #0b1326;
+    --color-surface: #171f33;
+    --color-primary: #22c55e;
+    --color-secondary: #f97316;
+    --color-danger: #ef4444;
+    --color-text: #dae2fd;
+    --color-subtext: #bccbb9;
+    
+    --color-nav-bg: rgba(23, 31, 51, 0.9); /* surface/90 */
+    --color-nav-text: #bccbb9; /* subtext */
+    --color-nav-text-hover: #ffffff;
+    --color-nav-active-bg: rgba(34, 197, 94, 0.1);
+    --color-nav-active-text: #22c55e;
+  }
+
+  [data-theme="mixx"] {
+    --color-background: #f4f6f9;
+    --color-surface: #ffffff;
+    --color-primary: #002e6d;
+    --color-secondary: #ffcc00;
+    --color-danger: #ef4444;
+    --color-text: #002e6d;
+    --color-subtext: #73829b;
+    
+    --color-nav-bg: #002e6d;
+    --color-nav-text: rgba(255, 255, 255, 0.7);
+    --color-nav-text-hover: #ffffff;
+    --color-nav-active-bg: transparent;
+    --color-nav-active-text: #ffcc00;
+  }
+
   html, body {
     margin: 0;
     padding: 0;
-    background-color: #0b1326; /* sengage-background */
-    color: #dae2fd;            /* sengage-text */
+    background-color: var(--color-background);
+    color: var(--color-text);
     font-family: 'Hanken Grotesk', 'Inter', system-ui, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
-
 /* Micro-animations et styles généraux */
 .btn-primary {
   @apply bg-sengageGreen text-background font-semibold px-4 py-2 rounded-lg transition-transform active:scale-95;

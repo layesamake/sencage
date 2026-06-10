@@ -7,13 +7,25 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#0b1326',       // Fond noir bleuté très sombre
-        surface: '#171f33',          // Surface (cartes gris anthracite)
-        sengageGreen: '#22c55e',     // Vert principal
-        sengageOrange: '#f97316',    // Orange secondaire
-        sengageRed: '#ef4444',       // Rouge alertes doux
-        sengageText: '#dae2fd',      // Texte blanc cassé
-        sengageSubText: '#bccbb9',   // Texte secondaire gris clair
+        background: 'var(--color-background)',
+        surface: 'var(--color-surface)',
+        sengageGreen: 'var(--color-primary)',
+        sengageOrange: 'var(--color-secondary)',
+        sengageRed: 'var(--color-danger)',
+        sengageText: 'var(--color-text)',
+        sengageSubText: 'var(--color-subtext)',
+        
+        navBg: 'var(--color-nav-bg)',
+        navText: 'var(--color-nav-text)',
+        navTextHover: 'var(--color-nav-text-hover)',
+        navActiveBg: 'var(--color-nav-active-bg)',
+        navActiveText: 'var(--color-nav-active-text)',
+
+        // Explicit Mixx colors kept for backward compatibility if used directly
+        mixxBlue: '#002e6d',
+        mixxYellow: '#ffcc00',
+        mixxLightBlue: '#eef2f9',
+        mixxGray: '#f4f6f9',
       },
       fontFamily: {
         sans: ['Hanken Grotesk', 'Inter', 'system-ui', 'sans-serif'],

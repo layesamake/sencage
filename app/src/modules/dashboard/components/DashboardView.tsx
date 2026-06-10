@@ -99,108 +99,41 @@ export const DashboardView: React.FC = () => {
         <p className="text-sengageSubText text-xs capitalize">{formattedDate}</p>
       </div>
 
-      {/* Raccourcis actions rapides */}
-      <div className="flex flex-col gap-2">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-sengageSubText/60">Actions Rapides</h3>
-        <div className="grid grid-cols-2 gap-3">
-          <button 
-            onClick={() => setActiveTab('nouvelle_commande')}
-            className="flex items-center gap-3 p-3 bg-surface hover:bg-surface/80 rounded-2xl border border-sengageSubText/5 active:scale-95 transition-all text-left"
-          >
-            <PlusCircle className="h-5 w-5 text-sengageGreen" />
-            <div>
-              <div className="font-bold text-sm text-white">Commande</div>
-              <div className="text-[10px] text-sengageSubText">Créer client</div>
-            </div>
-          </button>
-          
-          <button 
-            onClick={() => setActiveTab('nouvelle_fabrication')}
-            className="flex items-center gap-3 p-3 bg-surface hover:bg-surface/80 rounded-2xl border border-sengageSubText/5 active:scale-95 transition-all text-left"
-          >
-            <Hammer className="h-5 w-5 text-sengageOrange" />
-            <div>
-              <div className="font-bold text-sm text-white">Fabrication</div>
-              <div className="text-[10px] text-sengageSubText">Ordre menuisier</div>
-            </div>
-          </button>
 
-          <button 
-            onClick={() => setActiveTab('achats')}
-            className="flex items-center gap-3 p-3 bg-surface hover:bg-surface/80 rounded-2xl border border-sengageSubText/5 active:scale-95 transition-all text-left"
-          >
-            <TrendingUp className="h-5 w-5 text-sengageGreen" />
-            <div>
-              <div className="font-bold text-sm text-white">Achat Matériel</div>
-              <div className="text-[10px] text-sengageSubText">Comptant uniquement</div>
-            </div>
-          </button>
-
-          <button 
-            onClick={() => setActiveTab('stock')}
-            className="flex items-center gap-3 p-3 bg-surface hover:bg-surface/80 rounded-2xl border border-sengageSubText/5 active:scale-95 transition-all text-left"
-          >
-            <Layers className="h-5 w-5 text-sengageSubText" />
-            <div>
-              <div className="font-bold text-sm text-white">Voir Stock</div>
-              <div className="text-[10px] text-sengageSubText">Cages & Acc.</div>
-            </div>
-          </button>
-
-          <button 
-            onClick={() => setActiveTab('produits')}
-            className="flex items-center gap-3 p-3 bg-surface hover:bg-surface/80 rounded-2xl border border-sengageSubText/5 active:scale-95 transition-all text-left"
-          >
-            <BookOpen className="h-5 w-5 text-sengageGreen" />
-            <div>
-              <div className="font-bold text-sm text-white">Catalogue</div>
-              <div className="text-[10px] text-sengageSubText">Cages & Acc.</div>
-            </div>
-          </button>
-
-          <button 
-            onClick={() => setActiveTab('rapports')}
-            className="flex items-center gap-3 p-3 bg-surface hover:bg-surface/80 rounded-2xl border border-sengageSubText/5 active:scale-95 transition-all text-left"
-          >
-            <BarChart3 className="h-5 w-5 text-sengageOrange" />
-            <div>
-              <div className="font-bold text-sm text-white">Rapports</div>
-              <div className="text-[10px] text-sengageSubText">Statistiques</div>
-            </div>
-          </button>
-        </div>
-      </div>
 
       {/* Synthèse Trésorerie */}
       <div className="flex flex-col gap-2">
         <h3 className="text-xs font-bold uppercase tracking-wider text-sengageSubText/60">Soldes Trésorerie</h3>
-        <div className="card-sengage bg-gradient-to-br from-surface to-background/50 flex flex-col gap-4">
+        <div 
+          className="card-sengage flex flex-col gap-4 border-none"
+          style={{ backgroundColor: '#FFCC00', color: '#002E6D' }}
+        >
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2 text-sengageSubText">
+            <div className="flex items-center gap-2 opacity-80">
               <Wallet className="h-4 w-4" />
               <span className="text-xs font-semibold">Total Disponible</span>
             </div>
-            <span className="text-2xl font-black text-sengageGreen">
+            <span className="text-2xl font-black">
               {formatFCFA(stats?.finances?.total)}
             </span>
           </div>
           
-          <div className="grid grid-cols-3 gap-2 border-t border-sengageSubText/5 pt-3 text-center">
+          <div className="grid grid-cols-3 gap-2 border-t border-[#002E6D]/20 pt-3 text-center">
             <div>
-              <div className="text-[10px] text-sengageSubText">Caisse</div>
-              <div className="font-bold text-white text-xs mt-0.5">
+              <div className="text-[10px] opacity-80">Caisse</div>
+              <div className="font-bold text-xs mt-0.5">
                 {formatFCFA(stats?.finances?.caisse)}
               </div>
             </div>
-            <div className="border-x border-sengageSubText/5">
-              <div className="text-[10px] text-sengageSubText">Wave</div>
-              <div className="font-bold text-white text-xs mt-0.5">
+            <div className="border-x border-[#002E6D]/20">
+              <div className="text-[10px] opacity-80">Wave</div>
+              <div className="font-bold text-xs mt-0.5">
                 {formatFCFA(stats?.finances?.wave)}
               </div>
             </div>
             <div>
-              <div className="text-[10px] text-sengageSubText">OM</div>
-              <div className="font-bold text-white text-xs mt-0.5">
+              <div className="text-[10px] opacity-80">OM</div>
+              <div className="font-bold text-xs mt-0.5">
                 {formatFCFA(stats?.finances?.orangeMoney)}
               </div>
             </div>
@@ -257,9 +190,19 @@ export const DashboardView: React.FC = () => {
               <span className="text-[10px] font-semibold text-sengageSubText">Dû par les clients (Crédit)</span>
               {stats?.totalDebiteurs ? <AlertTriangle className="h-4 w-4 text-sengageOrange" /> : null}
             </div>
-            <span className={`text-lg font-black ${stats?.totalDebiteurs ? 'text-sengageRed' : 'text-sengageSubText/60'}`}>
-              {formatFCFA(stats?.totalDebiteurs)}
-            </span>
+            <div className="flex justify-between items-end mt-1">
+              <span className={`text-lg font-black ${stats?.totalDebiteurs ? 'text-sengageRed' : 'text-sengageSubText/60'}`}>
+                {formatFCFA(stats?.totalDebiteurs)}
+              </span>
+              {!!stats?.totalDebiteurs && (
+                <button 
+                  onClick={() => setActiveTab('rapports')}
+                  className="bg-sengageRed/10 text-sengageRed text-[10px] font-bold px-3 py-1 rounded-lg hover:bg-sengageRed/20 transition-all active:scale-95"
+                >
+                  Relancer
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Dû menuisiers */}
