@@ -17,12 +17,19 @@ export const CatalogueView: React.FC = () => {
   const [cageCout, setCageCout] = useState(0);
 
   // Formulaire Accessoires
+  const [editingAccId, setEditingAccId] = useState<string | null>(null);
   const [accNom, setAccNom] = useState('');
   const [accCat, setAccCat] = useState('');
   const [accUnite, setAccUnite] = useState<UniteType>('piece');
   const [accPrixAchat, setAccPrixAchat] = useState(0);
   const [accPrixVente, setAccPrixVente] = useState(0);
   const [accSeuil, setAccSeuil] = useState(10);
+
+  // Formulaire Kits
+  const [editingKitId, setEditingKitId] = useState<string | null>(null);
+  const [kitNom, setKitNom] = useState('');
+  const [kitCageId, setKitCageId] = useState('');
+  const [kitAccessoires, setKitAccessoires] = useState<{accessoireId: string, quantite: number}[]>([]);
 
   const [dbError, setDbError] = useState<string | null>(null);
 
@@ -76,6 +83,16 @@ export const CatalogueView: React.FC = () => {
     } catch (e) {
       console.error("Erreur cagesCategories:", e);
       setDbError((e as Error).message || "Erreur catégories de cages");
+      return [];
+    }
+  }, []);
+
+  const kits = useLiveQuery(async () => {
+    try {
+      return await ProduitsService.getKits();
+    } catch (e) {
+      console.error("Erreur kits:", e);
+      setDbError((e as Error).message || "Erreur kits");
       return [];
     }
   }, []);
@@ -135,19 +152,65 @@ export const CatalogueView: React.FC = () => {
     if (!accNom || !accCat) return alert("Veuillez remplir le nom et la catégorie.");
 
     try {
-      await ProduitsService.addAccessoire({
-        nom: accNom,
-        categorie: accCat,
-        unite: accUnite,
-        prixAchat: accPrixAchat,
-        prixVente: accPrixVente,
-        seuilStockFaible: accSeuil
-      });
-      alert("Accessoire ajouté.");
+      if (editingAccId) {
+        await ProduitsService.updateAccessoire(editingAccId, {
+          nom: accNom,
+          categorie: accCat,
+          unite: accUnite,
+          prixAchat: accPrixAchat,
+          prixVente: accPrixVente,
+          seuilStockFaible: accSeuil
+        });
+        alert("Accessoire modifié.");
+      } else {
+        await ProduitsService.addAccessoire({
+          nom: accNom,
+          categorie: accCat,
+          unite: accUnite,
+          prixAchat: accPrixAchat,
+          prixVente: accPrixVente,
+          seuilStockFaible: accSeuil
+        });
+        alert("Accessoire ajouté.");
+      }
       setAccNom('');
       setAccCat('');
+      setAccUnite('piece');
       setAccPrixAchat(0);
       setAccPrixVente(0);
+      setAccSeuil(10);
+      setEditingAccId(null);
+      setShowAddForm(false);
+    } catch (err) {
+      alert((err as Error).message);
+    }
+  };
+
+  const handleAddKit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!kitNom || !kitCageId) return alert("Veuillez remplir le nom et sélectionner une cage.");
+    if (kitAccessoires.length === 0) return alert("Veuillez ajouter au moins un accessoire.");
+
+    try {
+      if (editingKitId) {
+        await ProduitsService.updateKit(editingKitId, {
+          nom: kitNom,
+          cageModeleId: kitCageId,
+          accessoires: kitAccessoires
+        });
+        alert("Kit modifié.");
+      } else {
+        await ProduitsService.addKit({
+          nom: kitNom,
+          cageModeleId: kitCageId,
+          accessoires: kitAccessoires
+        });
+        alert("Kit ajouté.");
+      }
+      setKitNom('');
+      setKitCageId('');
+      setKitAccessoires([]);
+      setEditingKitId(null);
       setShowAddForm(false);
     } catch (err) {
       alert((err as Error).message);
@@ -170,6 +233,19 @@ export const CatalogueView: React.FC = () => {
               setCageEspece('');
               setCagePrix(0);
               setCageCout(0);
+            } else if (activeTab === 'accessoires') {
+              setEditingAccId(null);
+              setAccNom('');
+              setAccCat('');
+              setAccUnite('piece');
+              setAccPrixAchat(0);
+              setAccPrixVente(0);
+              setAccSeuil(10);
+            } else if (activeTab === 'kits') {
+              setEditingKitId(null);
+              setKitNom('');
+              setKitCageId('');
+              setKitAccessoires([]);
             }
             setShowAddForm(true);
           }}
@@ -338,6 +414,13 @@ export const CatalogueView: React.FC = () => {
                   <button
                     onClick={() => {
                       setActiveTab('accessoires');
+                      setEditingAccId(null);
+                      setAccNom('');
+                      setAccCat('');
+                      setAccUnite('piece');
+                      setAccPrixAchat(0);
+                      setAccPrixVente(0);
+                      setAccSeuil(10);
                       setShowAddForm(true);
                     }}
                     className="px-2.5 py-1.5 bg-sengageGreen text-background font-bold rounded-xl active:scale-95 transition-all flex items-center gap-1"
@@ -373,6 +456,24 @@ export const CatalogueView: React.FC = () => {
                             <h4 className="font-bold text-white text-sm">{a.nom}</h4>
                             <span className="text-[10px] text-sengageSubText/60 capitalize">Unité : {a.unite}</span>
                           </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => {
+                                setEditingAccId(a.id);
+                                setAccNom(a.nom);
+                                setAccCat(a.categorie);
+                                setAccUnite(a.unite);
+                                setAccPrixAchat(a.prixAchat);
+                                setAccPrixVente(a.prixVente);
+                                setAccSeuil(a.seuilStockFaible);
+                                setShowAddForm(true);
+                              }}
+                              className="p-1.5 text-sengageSubText hover:text-white rounded-lg transition-all"
+                              title="Modifier"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </button>
+                          </div>
                         </div>
                         <div className="flex gap-4 text-[10px] text-sengageSubText border-t border-sengageSubText/5 pt-2 mt-1">
                           <span>Achat : <strong className="text-white">{a.prixAchat.toLocaleString()} F</strong></span>
@@ -388,11 +489,78 @@ export const CatalogueView: React.FC = () => {
           );
         })()}
 
-        {activeTab === 'kits' && (
-          <div className="text-center py-12 text-sengageSubText/50">
-            Kits configurés (ex: Kit N3 Standard Équipée).
-          </div>
-        )}
+        {activeTab === 'kits' && (() => {
+          const list = kits || [];
+          if (list.length === 0) {
+            return (
+              <div className="text-center py-12 text-sengageSubText/50">
+                Aucun kit enregistré.
+              </div>
+            );
+          }
+          return (
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-between items-center mb-1 gap-2">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-sengageSubText/60">
+                  {list.length} kits au total
+                </span>
+                <button
+                  onClick={() => {
+                    setActiveTab('kits');
+                    setEditingKitId(null);
+                    setKitNom('');
+                    setKitCageId('');
+                    setKitAccessoires([]);
+                    setShowAddForm(true);
+                  }}
+                  className="px-2.5 py-1.5 bg-sengageGreen text-background font-bold rounded-xl active:scale-95 transition-all flex items-center gap-1"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  <span>Nouveau Kit</span>
+                </button>
+              </div>
+              <div className="flex flex-col gap-2">
+                {list.map(k => {
+                  const cage = modeles?.find(m => m.id === k.cageModeleId);
+                  return (
+                    <div key={k.id} className="card-sengage flex justify-between items-center border border-sengageSubText/5 hover:border-sengageSubText/15 transition-all">
+                      <div>
+                        <h4 className="font-bold text-white text-sm">{k.nom}</h4>
+                        <span className="text-[10px] text-sengageSubText">Cage: {cage?.nom || 'Inconnue'} ({k.accessoires.length} accessoires)</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            setEditingKitId(k.id);
+                            setKitNom(k.nom);
+                            setKitCageId(k.cageModeleId);
+                            setKitAccessoires(k.accessoires || []);
+                            setShowAddForm(true);
+                          }}
+                          className="p-1.5 text-sengageSubText hover:text-white rounded-lg transition-all"
+                          title="Modifier"
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={async () => {
+                            if (confirm(`Supprimer le kit ${k.nom} ?`)) {
+                              await ProduitsService.deleteKit(k.id);
+                            }
+                          }}
+                          className="p-1.5 text-sengageSubText hover:text-sengageRed rounded-lg transition-all"
+                          title="Supprimer"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Modale d'ajout */}
@@ -522,9 +690,11 @@ export const CatalogueView: React.FC = () => {
                 </button>
               </div>
             </form>
-          ) : (
+          ) : activeTab === 'accessoires' ? (
             <form onSubmit={handleAddAccessoire} className="bg-surface max-w-sm w-full rounded-3xl p-6 border border-sengageSubText/10 shadow-2xl flex flex-col gap-4">
-              <h3 className="font-black text-sm text-white border-b border-sengageSubText/5 pb-3">Nouvel Accessoire</h3>
+              <h3 className="font-black text-sm text-white border-b border-sengageSubText/5 pb-3">
+                {editingAccId ? "Modifier l'Accessoire" : "Nouvel Accessoire"}
+              </h3>
               
               <div>
                 <label className="text-[10px] text-sengageSubText block mb-1">Nom de l'Accessoire</label>
@@ -649,18 +819,112 @@ export const CatalogueView: React.FC = () => {
                   type="submit"
                   className="flex-1 py-2.5 bg-sengageGreen text-background font-black rounded-xl active:scale-95 transition-all text-xs"
                 >
-                  Ajouter
+                  {editingAccId ? "Modifier" : "Ajouter"}
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowAddForm(false)}
+                  onClick={() => {
+                    setShowAddForm(false);
+                    setEditingAccId(null);
+                    setAccNom('');
+                    setAccCat('');
+                    setAccUnite('piece');
+                    setAccPrixAchat(0);
+                    setAccPrixVente(0);
+                    setAccSeuil(10);
+                  }}
                   className="flex-1 py-2.5 bg-background text-sengageSubText rounded-xl border border-sengageSubText/10 active:scale-95 transition-all text-xs"
                 >
                   Annuler
                 </button>
               </div>
             </form>
-          )}
+          ) : activeTab === 'kits' ? (
+            <form onSubmit={handleAddKit} className="bg-surface max-w-sm w-full rounded-3xl p-6 border border-sengageSubText/10 shadow-2xl flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+              <h3 className="font-black text-sm text-white border-b border-sengageSubText/5 pb-3">
+                {editingKitId ? "Modifier le Kit" : "Nouveau Kit"}
+              </h3>
+              
+              <div>
+                <label className="text-[10px] text-sengageSubText block mb-1">Nom du Kit</label>
+                <input
+                  type="text"
+                  value={kitNom}
+                  onChange={(e) => setKitNom(e.target.value)}
+                  placeholder="Ex: Kit N3 Complet"
+                  className="w-full bg-background border border-sengageSubText/10 rounded-xl p-2.5 text-white"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] text-sengageSubText block mb-1">Modèle de Cage</label>
+                <select
+                  value={kitCageId}
+                  onChange={(e) => setKitCageId(e.target.value)}
+                  className="w-full bg-background border border-sengageSubText/10 rounded-xl p-2.5 text-white text-xs"
+                >
+                  <option value="">-- Sélectionner une cage --</option>
+                  {modeles?.map(m => (
+                    <option key={m.id} value={m.id}>{m.nom} ({m.espece})</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="text-[10px] text-sengageSubText block">Accessoires inclus</label>
+                  <button type="button" onClick={() => setKitAccessoires([...kitAccessoires, {accessoireId: '', quantite: 1}])} className="text-[10px] text-sengageGreen font-bold">+ Ajouter</button>
+                </div>
+                {kitAccessoires.map((ka, index) => (
+                  <div key={index} className="flex gap-2 mb-2 items-center">
+                    <select
+                      value={ka.accessoireId}
+                      onChange={(e) => {
+                        const newAcc = [...kitAccessoires];
+                        newAcc[index].accessoireId = e.target.value;
+                        setKitAccessoires(newAcc);
+                      }}
+                      className="flex-1 bg-background border border-sengageSubText/10 rounded-lg p-2 text-white text-xs"
+                    >
+                      <option value="">-- Accessoire --</option>
+                      {accessoires?.map(a => (
+                        <option key={a.id} value={a.id}>{a.nom}</option>
+                      ))}
+                    </select>
+                    <input
+                      type="number"
+                      value={ka.quantite}
+                      onChange={(e) => {
+                        const newAcc = [...kitAccessoires];
+                        newAcc[index].quantite = Number(e.target.value);
+                        setKitAccessoires(newAcc);
+                      }}
+                      className="w-16 bg-background border border-sengageSubText/10 rounded-lg p-2 text-white text-xs text-center"
+                    />
+                    <button type="button" onClick={() => {
+                      const newAcc = kitAccessoires.filter((_, i) => i !== index);
+                      setKitAccessoires(newAcc);
+                    }} className="text-sengageRed p-1"><X className="h-4 w-4"/></button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex gap-3 mt-2">
+                <button type="submit" className="flex-1 py-2.5 bg-sengageGreen text-background font-black rounded-xl active:scale-95 transition-all text-xs">
+                  {editingKitId ? "Modifier" : "Ajouter"}
+                </button>
+                <button type="button" onClick={() => {
+                  setShowAddForm(false);
+                  setEditingKitId(null);
+                  setKitNom('');
+                  setKitCageId('');
+                  setKitAccessoires([]);
+                }} className="flex-1 py-2.5 bg-background text-sengageSubText rounded-xl border border-sengageSubText/10 active:scale-95 transition-all text-xs">
+                  Annuler
+                </button>
+              </div>
+            </form>
+          ) : null}
         </div>
       )}
 

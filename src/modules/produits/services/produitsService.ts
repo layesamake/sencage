@@ -280,4 +280,8 @@ export class ProduitsService {
   static async deleteKit(id: string): Promise<void> {
     await db.kits.delete(id);
   }
+
+  static async updateKit(id: string, data: Partial<Omit<Kit, 'id' | 'createdAt'>>): Promise<void> {
+    await db.kits.update(id, data);
+  }
 }
