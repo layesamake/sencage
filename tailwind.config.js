@@ -21,6 +21,16 @@ export default {
         navActiveBg: 'var(--color-nav-active-bg)',
         navActiveText: 'var(--color-nav-active-text)',
 
+        headerBg: 'var(--color-header-bg)',
+        headerText: 'var(--color-header-text)',
+        headerIcon: 'var(--color-header-icon)',
+        headerIconHover: 'var(--color-header-icon-hover)',
+        headerActiveBg: 'var(--color-header-active-bg)',
+        headerActiveText: 'var(--color-header-active-text)',
+        headerLogoBg: 'var(--color-header-logo-bg)',
+        headerLogoBorder: 'var(--color-header-logo-border)',
+        headerLogoText: 'var(--color-header-logo-text)',
+
         // Explicit Mixx colors kept for backward compatibility if used directly
         mixxBlue: '#002e6d',
         mixxYellow: '#ffcc00',

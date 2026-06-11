@@ -16,6 +16,16 @@
     --color-nav-text-hover: #ffffff;
     --color-nav-active-bg: rgba(34, 197, 94, 0.1);
     --color-nav-active-text: #22c55e;
+
+    --color-header-bg: rgba(23, 31, 51, 0.8);
+    --color-header-text: #dae2fd;
+    --color-header-icon: #bccbb9;
+    --color-header-icon-hover: #ffffff;
+    --color-header-active-bg: #0b1326;
+    --color-header-active-text: #22c55e;
+    --color-header-logo-bg: rgba(34, 197, 94, 0.1);
+    --color-header-logo-border: rgba(34, 197, 94, 0.2);
+    --color-header-logo-text: #22c55e;
   }
 
   [data-theme="mixx"] {
@@ -32,6 +42,16 @@
     --color-nav-text-hover: #ffffff;
     --color-nav-active-bg: transparent;
     --color-nav-active-text: #ffcc00;
+
+    --color-header-bg: #002e6d;
+    --color-header-text: #ffffff;
+    --color-header-icon: #ffffff;
+    --color-header-icon-hover: #ffcc00;
+    --color-header-active-bg: transparent;
+    --color-header-active-text: #ffcc00;
+    --color-header-logo-bg: transparent;
+    --color-header-logo-border: rgba(255, 255, 255, 0.2);
+    --color-header-logo-text: #ffffff;
   }
 
   html, body {
