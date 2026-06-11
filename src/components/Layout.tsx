@@ -69,31 +69,43 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       )}
 
       {/* Barre supérieure rapide */}
-      <header className="bg-[#002E6D] backdrop-blur-md shadow-lg px-4 py-3 flex justify-between items-center sticky top-0 z-40">
+      <header className={`${theme === 'mixx' ? 'bg-[#002E6D] shadow-lg' : 'bg-surface/80 border-b border-sengageSubText/5'} backdrop-blur-md px-4 py-3 flex justify-between items-center sticky top-0 z-40`}>
         <div className="flex items-center gap-2">
-          <div className="bg-white/10 px-2.5 py-1 rounded-lg border border-white/20">
-            <span className="text-[#FFFFFF] font-bold text-xs tracking-wider">SENGAGE</span>
+          <div className={`${theme === 'mixx' ? 'bg-white/10 border-white/20' : 'bg-sengageGreen/10 border-sengageGreen/20'} px-2.5 py-1 rounded-lg border`}>
+            <span className={`${theme === 'mixx' ? 'text-[#FFFFFF]' : 'text-sengageGreen'} font-bold text-xs tracking-wider`}>SENGAGE</span>
           </div>
-          <span className="text-[#FFFFFF] font-bold text-sm">Manager</span>
+          <span className={`${theme === 'mixx' ? 'text-[#FFFFFF]' : 'text-sengageText'} font-bold text-sm`}>Manager</span>
         </div>
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setActiveTab('produits')}
-            className={`p-2 rounded-xl transition-all ${activeTab === 'produits' ? 'bg-white/10 text-[#FFCC00]' : 'text-[#FFFFFF] hover:text-[#FFCC00]/80'}`}
+            className={`p-2 rounded-xl transition-all ${
+              activeTab === 'produits' 
+                ? (theme === 'mixx' ? 'bg-white/10 text-[#FFCC00]' : 'bg-background text-sengageGreen') 
+                : (theme === 'mixx' ? 'text-[#FFFFFF] hover:text-[#FFCC00]/80' : 'text-sengageSubText hover:text-white')
+            }`}
             title="Catalogue & Kits"
           >
             <Layers className="h-4.5 w-4.5" />
           </button>
           <button 
             onClick={() => setActiveTab('contacts')}
-            className={`p-2 rounded-xl transition-all ${activeTab === 'contacts' ? 'bg-white/10 text-[#FFCC00]' : 'text-[#FFFFFF] hover:text-[#FFCC00]/80'}`}
+            className={`p-2 rounded-xl transition-all ${
+              activeTab === 'contacts' 
+                ? (theme === 'mixx' ? 'bg-white/10 text-[#FFCC00]' : 'bg-background text-sengageGreen') 
+                : (theme === 'mixx' ? 'text-[#FFFFFF] hover:text-[#FFCC00]/80' : 'text-sengageSubText hover:text-white')
+            }`}
             title="Contacts"
           >
             <Users className="h-4.5 w-4.5" />
           </button>
           <button 
             onClick={() => setActiveTab('parametres')}
-            className={`p-2 rounded-xl transition-all ${activeTab === 'parametres' ? 'bg-white/10 text-[#FFCC00]' : 'text-[#FFFFFF] hover:text-[#FFCC00]/80'}`}
+            className={`p-2 rounded-xl transition-all ${
+              activeTab === 'parametres' 
+                ? (theme === 'mixx' ? 'bg-white/10 text-[#FFCC00]' : 'bg-background text-sengageGreen') 
+                : (theme === 'mixx' ? 'text-[#FFFFFF] hover:text-[#FFCC00]/80' : 'text-sengageSubText hover:text-white')
+            }`}
             title="Paramètres"
           >
             <Settings className="h-4.5 w-4.5" />
@@ -104,14 +116,14 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               const nextIndex = (themes.indexOf(theme) + 1) % themes.length;
               setTheme(themes[nextIndex]);
             }}
-            className="p-2 rounded-xl text-[#FFFFFF] hover:text-[#FFCC00]/80 transition-all"
+            className={`p-2 rounded-xl transition-all ${theme === 'mixx' ? 'text-[#FFFFFF] hover:text-[#FFCC00]/80' : 'text-sengageSubText hover:text-sengageGreen'}`}
             title="Changer de thème"
           >
             <Palette className="h-4.5 w-4.5" />
           </button>
           <button 
             onClick={lock}
-            className="p-2 rounded-xl text-[#FFFFFF] hover:text-[#FFCC00]/80 transition-all"
+            className={`p-2 rounded-xl transition-all ${theme === 'mixx' ? 'text-[#FFFFFF] hover:text-[#FFCC00]/80' : 'text-sengageSubText hover:text-sengageRed'}`}
             title="Verrouiller"
           >
             <Lock className="h-4 w-4" />
