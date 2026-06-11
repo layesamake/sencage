@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../../database/db';
 import { ContactsService } from '../services/contactsService';
-import { Plus, User, Phone, MapPin, AlertTriangle } from 'lucide-react';
+import { Plus, User, Phone, MapPin, AlertTriangle, X, Edit2 } from 'lucide-react';
 import type { ContactType } from '../../../types';
 
 export const ContactsView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ContactType>('client');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingContactId, setEditingContactId] = useState<string | null>(null);
+  const [viewingContactId, setViewingContactId] = useState<string | null>(null);
 
   // Formulaire d'ajout
   const [nom, setNom] = useState('');
@@ -43,19 +45,30 @@ export const ContactsView: React.FC = () => {
     if (!nom || !tel) return alert("Veuillez remplir le nom et le téléphone.");
 
     try {
-      await ContactsService.addContact({
-        nom,
-        telephone: tel,
-        adresse,
-        type: activeTab,
-        observation: obs
-      });
+      if (editingContactId) {
+        await ContactsService.updateContact(editingContactId, {
+          nom,
+          telephone: tel,
+          adresse,
+          observation: obs
+        });
+        alert("Contact modifié.");
+      } else {
+        await ContactsService.addContact({
+          nom,
+          telephone: tel,
+          adresse,
+          type: activeTab,
+          observation: obs
+        });
+        alert("Contact ajouté.");
+      }
 
-      alert("Contact ajouté.");
       setNom('');
       setTel('');
       setAdresse('');
       setObs('');
+      setEditingContactId(null);
       setShowAddForm(false);
     } catch (err) {
       alert((err as Error).message);
@@ -67,7 +80,14 @@ export const ContactsView: React.FC = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold text-sengageText">Annuaire Contacts</h2>
         <button
-          onClick={() => setShowAddForm(true)}
+          onClick={() => {
+            setEditingContactId(null);
+            setNom('');
+            setTel('');
+            setAdresse('');
+            setObs('');
+            setShowAddForm(true);
+          }}
           className="p-2 bg-sengageGreen text-background hover:bg-sengageGreen/80 rounded-xl transition-all active:scale-95 flex items-center justify-center"
         >
           <Plus className="h-5 w-5" />
@@ -93,7 +113,11 @@ export const ContactsView: React.FC = () => {
       <div className="flex flex-col gap-3">
         {contacts && contacts.length > 0 ? (
           contacts.map(c => (
-            <div key={c.id} className="card-sengage flex flex-col gap-3 border border-sengageSubText/5">
+            <div 
+              key={c.id} 
+              onClick={() => setViewingContactId(c.id)}
+              className="card-sengage cursor-pointer flex flex-col gap-3 border border-sengageSubText/5 hover:border-sengageGreen/30 transition-all"
+            >
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2">
                   <div className="bg-background p-2 rounded-xl border border-sengageSubText/5">
@@ -185,12 +209,91 @@ export const ContactsView: React.FC = () => {
         )}
       </div>
 
-      {/* Modale d'ajout contact */}
+      {/* Fiche Contact (Lecture Seule) */}
+      {viewingContactId && (() => {
+        const contact = contacts?.find(c => c.id === viewingContactId);
+        if (!contact) return null;
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+            <div className="bg-surface max-w-sm w-full rounded-3xl p-6 border border-sengageSubText/10 shadow-2xl flex flex-col gap-4 relative">
+              <button 
+                onClick={() => setViewingContactId(null)}
+                className="absolute top-4 right-4 text-sengageSubText hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              
+              <h3 className="font-black text-lg text-white border-b border-sengageSubText/5 pb-3 pr-8 capitalize">
+                Fiche {contact.type}
+              </h3>
+
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="bg-background p-3 rounded-xl border border-sengageSubText/5">
+                    <User className="h-6 w-6 text-sengageSubText" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-sengageSubText block mb-0.5">Nom</span>
+                    <div className="font-bold text-white text-base">{contact.nom}</div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 bg-background p-3 rounded-xl border border-sengageSubText/5">
+                  <div>
+                    <span className="text-[10px] text-sengageSubText block mb-0.5">Téléphone</span>
+                    <div className="font-semibold text-white text-sm flex items-center gap-1.5">
+                      <Phone className="h-3 w-3 text-sengageSubText" />
+                      {contact.telephone}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-sengageSubText block mb-0.5">Adresse</span>
+                    <div className="font-semibold text-white text-sm flex items-center gap-1.5 truncate" title={contact.adresse}>
+                      <MapPin className="h-3 w-3 text-sengageSubText" />
+                      {contact.adresse || '-'}
+                    </div>
+                  </div>
+                </div>
+
+                {contact.observation && (
+                  <div>
+                    <span className="text-[10px] text-sengageSubText block mb-0.5">Observation / Note</span>
+                    <div className="bg-background/50 border border-sengageSubText/5 p-2 rounded-xl text-sm text-sengageSubText">
+                      {contact.observation}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-3 mt-4 pt-4 border-t border-sengageSubText/5">
+                <button
+                  onClick={() => {
+                    setViewingContactId(null);
+                    setEditingContactId(contact.id);
+                    setNom(contact.nom);
+                    setTel(contact.telephone);
+                    setAdresse(contact.adresse || '');
+                    setObs(contact.observation || '');
+                    setShowAddForm(true);
+                  }}
+                  className="flex-1 py-2.5 bg-sengageGreen/10 hover:bg-sengageGreen/20 text-sengageGreen font-bold rounded-xl active:scale-95 transition-all flex items-center justify-center gap-2"
+                >
+                  <Edit2 className="h-4 w-4" />
+                  <span>Modifier le contact</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Modale d'ajout/modification contact */}
       {showAddForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
           <form onSubmit={handleSubmit} className="bg-surface max-w-sm w-full rounded-3xl p-6 border border-sengageSubText/10 shadow-2xl flex flex-col gap-4">
             <h3 className="font-black text-sm text-white border-b border-sengageSubText/5 pb-3">
-              Ajouter un {activeTab === 'client' ? 'Client' : activeTab === 'menuisier' ? 'Menuisier' : 'Fournisseur'}
+              {editingContactId ? "Modifier le " : "Ajouter un "} 
+              {activeTab === 'client' ? 'Client' : activeTab === 'menuisier' ? 'Menuisier' : 'Fournisseur'}
             </h3>
             
             <div>
@@ -242,7 +345,7 @@ export const ContactsView: React.FC = () => {
                 type="submit"
                 className="flex-1 py-2.5 bg-sengageGreen text-background font-black rounded-xl active:scale-95 transition-all text-xs"
               >
-                Ajouter
+                {editingContactId ? "Modifier" : "Ajouter"}
               </button>
               <button
                 type="button"
