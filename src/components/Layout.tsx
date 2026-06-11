@@ -69,31 +69,31 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       )}
 
       {/* Barre supérieure rapide */}
-      <header className="bg-surface/80 backdrop-blur-md border-b border-sengageSubText/5 px-4 py-3 flex justify-between items-center sticky top-0 z-40">
+      <header className="bg-[#002E6D] backdrop-blur-md shadow-lg px-4 py-3 flex justify-between items-center sticky top-0 z-40">
         <div className="flex items-center gap-2">
-          <div className="bg-sengageGreen/10 px-2.5 py-1 rounded-lg border border-sengageGreen/20">
-            <span className="text-sengageGreen font-bold text-xs tracking-wider">SENGAGE</span>
+          <div className="bg-white/10 px-2.5 py-1 rounded-lg border border-white/20">
+            <span className="text-[#FFFFFF] font-bold text-xs tracking-wider">SENGAGE</span>
           </div>
-          <span className="text-sengageText font-bold text-sm">Manager</span>
+          <span className="text-[#FFFFFF] font-bold text-sm">Manager</span>
         </div>
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setActiveTab('produits')}
-            className={`p-2 rounded-xl transition-all ${activeTab === 'produits' ? 'bg-background text-sengageGreen' : 'text-sengageSubText hover:text-white'}`}
+            className={`p-2 rounded-xl transition-all ${activeTab === 'produits' ? 'bg-white/10 text-[#FFCC00]' : 'text-[#FFFFFF] hover:text-[#FFCC00]/80'}`}
             title="Catalogue & Kits"
           >
             <Layers className="h-4.5 w-4.5" />
           </button>
           <button 
             onClick={() => setActiveTab('contacts')}
-            className={`p-2 rounded-xl transition-all ${activeTab === 'contacts' ? 'bg-background text-sengageGreen' : 'text-sengageSubText hover:text-white'}`}
+            className={`p-2 rounded-xl transition-all ${activeTab === 'contacts' ? 'bg-white/10 text-[#FFCC00]' : 'text-[#FFFFFF] hover:text-[#FFCC00]/80'}`}
             title="Contacts"
           >
             <Users className="h-4.5 w-4.5" />
           </button>
           <button 
             onClick={() => setActiveTab('parametres')}
-            className={`p-2 rounded-xl transition-all ${activeTab === 'parametres' ? 'bg-background text-sengageGreen' : 'text-sengageSubText hover:text-white'}`}
+            className={`p-2 rounded-xl transition-all ${activeTab === 'parametres' ? 'bg-white/10 text-[#FFCC00]' : 'text-[#FFFFFF] hover:text-[#FFCC00]/80'}`}
             title="Paramètres"
           >
             <Settings className="h-4.5 w-4.5" />
@@ -104,14 +104,14 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               const nextIndex = (themes.indexOf(theme) + 1) % themes.length;
               setTheme(themes[nextIndex]);
             }}
-            className="p-2 rounded-xl text-sengageSubText hover:text-sengageGreen transition-all"
+            className="p-2 rounded-xl text-[#FFFFFF] hover:text-[#FFCC00]/80 transition-all"
             title="Changer de thème"
           >
             <Palette className="h-4.5 w-4.5" />
           </button>
           <button 
             onClick={lock}
-            className="p-2 rounded-xl text-sengageSubText hover:text-sengageRed transition-all"
+            className="p-2 rounded-xl text-[#FFFFFF] hover:text-[#FFCC00]/80 transition-all"
             title="Verrouiller"
           >
             <Lock className="h-4 w-4" />
